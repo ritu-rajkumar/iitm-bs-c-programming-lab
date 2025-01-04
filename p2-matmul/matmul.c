@@ -11,6 +11,17 @@
 /// @param A 2D array of dimension DIMxDIM defined by the DIM macro.
 void read_mat(char *filename, float A[DIM][DIM])
 {
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("Error opening file: %s\n", filename);
+        return;
+    }
+    for (int i = 0; i < DIM; i++) {
+        for (int j = 0; j < DIM; j++) {
+            fscanf(file, "%f", &A[i][j]);
+        }
+    }
+    fclose(file);
 }
 
 /**
@@ -24,6 +35,12 @@ void read_mat(char *filename, float A[DIM][DIM])
  */
 void print_mat(float A[DIM][DIM])
 {
+    for (int i = 0; i < DIM; i++) {
+        for (int j = 0; j < DIM; j++) {
+            printf("%.2f ", A[i][j]);
+        }
+        printf("\n");
+    }
 }
 
 /// @brief Performs the matrix multiplication on Matrix A and B and saves the results to Matrix C
@@ -32,15 +49,19 @@ void print_mat(float A[DIM][DIM])
 /// @param C Output Matrix C
 void matmul(float A[DIM][DIM], float B[DIM][DIM], float C[DIM][DIM])
 {
+    for (int i = 0; i < DIM; i++) {
+        for (int j = 0; j < DIM; j++) {
+            C[i][j] = 0; // Initialize the result matrix
+            for (int k = 0; k < DIM; k++) {
+                C[i][j] += A[i][k] * B[k][j]; // Perform multiplication
+            }
+        }
+    }
 }
 
 double gettime()
 {
-    struct timespec t;
-    timespec_get(&t, TIME_UTC);
-    unsigned long tvsec = t.tv_sec;
-    unsigned long tvnsec = t.tv_nsec;
-    return tvsec + 1e-9 * tvnsec;
+    return (double)clock() / CLOCKS_PER_SEC; // Return time in seconds
 }
 
 int main()
@@ -64,12 +85,12 @@ int main()
     // Task 2: Perform Matrix multiplication
     // Uncomment the below part after doing task 1.
 
-    // double t1 = gettime();
-    // // Declare a matrix C and use it for multiplication
-    // matmul(A, B, C);
-    // double t2 = gettime();
-    // printf("Matrix C: \n");
-    // print_mat(C);
+    double t1 = gettime();
+    // Declare a matrix C and use it for multiplication
+    matmul(A, B, C);
+    double t2 = gettime();
+    printf("Matrix C: \n");
+    print_mat(C);
 
-    // printf("Time taken: %8.4g milliseconds\n", (t2-t1)*1000);
+    printf("Time taken: %8.4g milliseconds\n", (t2-t1)*1000);
 }

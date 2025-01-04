@@ -11,35 +11,55 @@ Run the below command to compile and run this program.
 
 void toggle_every_kth_room(int *lights, int k)
 {
-  // Code here
+  int mask = 0;
+  for (int i = (k - 1); i < 16; i++)
+  {
+    mask |= 1 << i;
+  }
+  *lights ^= mask;
 }
 
 void toggle_even_rooms(int *lights)
 {
   // Use the above function to toggle the even rooms
   // toggle_every_kth_room(...);
+  int mask = 0x5555;
+  *lights ^= mask;
 }
 
 int get_mask()
 {
-  // Read the input till -1 and create the mask
+  int mask = 0;
+  int input;
+  while (1) {
+    scanf("%d", &input);
+    if (input == -1) {
+      break;
+    }
+    mask |= (1 << input);
+  }
+  return mask;
 }
 
 void turn_on_lights(int *lights)
 {
-  // apply mask to lights to turn on the particular lights
   int mask = get_mask();
+  *lights |= mask; // Turn on the lights using bitwise OR
 }
 
 void turn_off_lights(int *lights)
 {
-  // apply mask to lights to turn off the particular lights
   int mask = get_mask();
+  *lights &= ~mask; // Turn off the lights using bitwise AND with negation
 }
 
 int count_lights(int lights)
 {
-  // Code here
+  int count = 0;
+  for (int i = 0; i < 16; i++) {
+    count += (lights >> i) & 1; // Count the number of bits set to 1
+  }
+  return count;
 }
 
 void print_bin(int a)
